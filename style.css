@@ -1,0 +1,205 @@
+/* ===== GLOBAL STYLES ===== */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #0A0A0A;
+    /* deep black background */
+    color: #FFFFFF;
+    /* primary text color */
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Muted / secondary text */
+.text-muted,
+p.text-muted,
+small.text-muted {
+    color: #CCCCCC !important;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background-color: #111111 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-brand {
+    color: #007AFF !important;
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+    color: #FFFFFF !important;
+}
+
+.navbar-nav .nav-link.active {
+    color: #007AFF !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #5AC8FA !important;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background-color: #111111;
+    color: #AAAAAA;
+    font-size: 0.85rem;
+}
+
+/* ===== STAT CARDS ===== */
+.stat-card {
+    background-color: #1C1C1E;
+    border-radius: 1.5rem;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: #FFFFFF;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card h6 {
+    color: #AAAAAA;
+}
+
+.stat-card h3 {
+    font-size: 2rem;
+    color: #FFFFFF;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== STAGE CARDS ===== */
+.stage-card {
+    background-color: #1C1C1E;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stage-card h6 {
+    color: #CCCCCC;
+}
+
+.stage-card h4 {
+    color: #FFFFFF;
+}
+
+.stage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== CONTENT CARDS ===== */
+.content-card {
+    background-color: #1C1C1E;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-card h6 {
+    color: #FFFFFF;
+}
+
+.content-card p {
+    color: #CCCCCC;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== FILTER BUTTONS ===== */
+.btn-outline-light {
+    border-color: #444 !important;
+    color: #FFFFFF !important;
+}
+
+.btn-outline-light.active,
+.btn-outline-light:hover {
+    background-color: #007AFF !important;
+    border-color: #007AFF !important;
+    color: #FFFFFF !important;
+}
+
+/* ===== BADGES ===== */
+.badge {
+    border-radius: 1rem;
+    font-weight: 500;
+    padding: 0.45em 0.9em;
+    font-size: 0.85rem;
+}
+
+.badge-planned {
+    background-color: #FFD60A;
+    color: #1C1C1E;
+}
+
+.badge-editing {
+    background-color: #5AC8FA;
+    color: #1C1C1E;
+}
+
+.badge-published {
+    background-color: #34C759;
+    color: #FFFFFF;
+}
+
+/* ===== MODAL ===== */
+.modal-content {
+    background-color: #1C1C1E;
+    color: #FFFFFF;
+    border-radius: 1.5rem;
+}
+
+.modal-header {
+    border-bottom: 0;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+    background-color: #2A2A2A;
+    color: #FFFFFF;
+    border: none;
+}
+
+.modal-body .form-control::placeholder {
+    color: #AAAAAA;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background-color: #007AFF;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #005FCC;
+}
+
+/* ===== RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+
+    .stat-card,
+    .stage-card,
+    .content-card,
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    main h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        margin-bottom: 0.5rem;
+    }
+}
