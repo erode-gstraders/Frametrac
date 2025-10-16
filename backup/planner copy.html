@@ -16,7 +16,7 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#">FRAMETRAC</a>
+            <a class="navbar-brand" href="index.html">FRAMETRAC</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -135,9 +135,13 @@
             contentGrid.innerHTML = '';
             contentItems.filter(item => filter === 'All' || item.genre === filter)
                 .forEach((item, index) => {
-                    const badgeClass = item.status === 'Planned' ? 'badge-planned' :
-                        item.status === 'Editing' ? 'badge-editing' :
-                            item.status === 'Published' ? 'badge-published' : 'badge-secondary';
+                    const badgeClass =
+                        item.status === 'Planned' ? 'badge-planned' :
+                            item.status === 'Scripting' ? 'badge-scripting' :
+                                item.status === 'Filming' ? 'badge-filming' :
+                                    item.status === 'Editing' ? 'badge-editing' :
+                                        item.status === 'Ready' ? 'badge-ready' :
+                                            item.status === 'Published' ? 'badge-published' : 'badge-secondary';
                     contentGrid.innerHTML += `
       <div class="col-md-4">
         <div class="card content-card" data-index="${index}">

@@ -143,9 +143,24 @@ footer {
     color: #1C1C1E;
 }
 
+.badge-scripting {
+    background-color: #FF9500;
+    color: #1C1C1E;
+}
+
+.badge-filming {
+    background-color: #FF3B30;
+    color: #FFFFFF;
+}
+
 .badge-editing {
     background-color: #5AC8FA;
     color: #1C1C1E;
+}
+
+.badge-ready {
+    background-color: #AF52DE;
+    color: #FFFFFF;
 }
 
 .badge-published {

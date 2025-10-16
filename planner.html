@@ -16,7 +16,7 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#">FRAMETRAC</a>
+            <a class="navbar-brand" href="index.html">FRAMETRAC</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -41,9 +41,11 @@
             </div>
             <div class="d-flex">
                 <button class="btn btn-primary rounded-pill me-2" data-bs-toggle="modal"
-                    data-bs-target="#addContentModal">+ Add Content</button>
+                    data-bs-target="#addContentModal" id="addContentBtn">+ Add Content</button>
                 <button class="btn btn-outline-light rounded-pill me-2" id="exportBtn">Save JSON</button>
                 <button class="btn btn-outline-light rounded-pill" id="loadBtn">Load JSON</button>
+                <button class="btn btn-outline-danger rounded-pill ms-2" id="clearBtn">Clear JSON</button>
+
             </div>
         </div>
 
@@ -102,14 +104,17 @@
                                 <option>Published</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Deadline</label>
-                            <input type="date" class="form-control bg-secondary text-white" id="deadlineInput">
+                            <label for="createdOnInput" class="form-label">Created On</label>
+                            <input type="date" class="form-control" id="createdOnInput" readonly>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Publish Date</label>
-                            <input type="date" class="form-control bg-secondary text-white" id="publishInput">
+                            <label for="deadlineInput" class="form-label">Deadline</label>
+                            <input type="date" class="form-control" id="deadlineInput">
                         </div>
+
                         <button type="submit" class="btn btn-primary rounded-pill w-100">Save</button>
                     </form>
                 </div>
@@ -127,17 +132,40 @@
         let contentItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         const contentGrid = document.getElementById('contentGrid');
 
-        // Track which item is being edited; null means new item
         let editIndex = null;
+
+        const createdOnInput = document.getElementById('createdOnInput');
+        const deadlineInput = document.getElementById('deadlineInput');
+
+        // ===== DEFAULT DATES =====
+        function setDefaultDates(isEdit = false, item = null) {
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            if (isEdit && item) {
+                createdOnInput.value = item.createdOn;
+                deadlineInput.value = item.deadline;
+            } else {
+                createdOnInput.value = todayStr;
+                const defaultDeadline = new Date();
+                defaultDeadline.setDate(defaultDeadline.getDate() + 60);
+                deadlineInput.value = defaultDeadline.toISOString().split('T')[0];
+            }
+        }
 
         // ===== RENDER CARDS =====
         function renderCards(filter = 'All') {
             contentGrid.innerHTML = '';
             contentItems.filter(item => filter === 'All' || item.genre === filter)
                 .forEach((item, index) => {
-                    const badgeClass = item.status === 'Planned' ? 'badge-planned' :
-                        item.status === 'Editing' ? 'badge-editing' :
-                            item.status === 'Published' ? 'badge-published' : 'badge-secondary';
+                    const badgeClass =
+                        item.status === 'Planned' ? 'badge-planned' :
+                            item.status === 'Scripting' ? 'badge-scripting' :
+                                item.status === 'Filming' ? 'badge-filming' :
+                                    item.status === 'Editing' ? 'badge-editing' :
+                                        item.status === 'Ready' ? 'badge-ready' :
+                                            item.status === 'Published' ? 'badge-published' : 'badge-secondary';
+
                     contentGrid.innerHTML += `
       <div class="col-md-4">
         <div class="card content-card" data-index="${index}">
@@ -145,13 +173,13 @@
             <h6 class="fw-bold mb-1">${item.title}</h6>
             <p class="text-muted small mb-2">Genre: ${item.genre}</p>
             <span class="badge ${badgeClass} mb-2">${item.status}</span>
-            <p class="small text-muted mb-0">Deadline: ${item.deadline}</p>
-            <p class="small text-muted">Publish: ${item.publish}</p>
+            <p class="small text-muted mb-0">Created On: ${item.createdOn}</p>
+            <p class="small text-muted">Deadline: ${item.deadline}</p>
           </div>
         </div>
       </div>`;
                 });
-            enableCardEditing(); // attach click listeners after rendering
+            enableCardEditing();
         }
 
         renderCards();
@@ -165,26 +193,42 @@
             });
         });
 
+        // ===== ADD CONTENT BUTTON =====
+        document.getElementById('addContentBtn').addEventListener('click', () => {
+            editIndex = null;
+            setDefaultDates(false);
+        });
+
         // ===== ADD / EDIT CONTENT =====
         const contentForm = document.getElementById('contentForm');
         contentForm.addEventListener('submit', e => {
             e.preventDefault();
 
+            let createdOn = createdOnInput.value;
+            if (!createdOn) {
+                createdOn = new Date().toISOString().split('T')[0];
+            }
+
+            let deadline = deadlineInput.value;
+            if (!deadline) {
+                const defaultDeadline = new Date();
+                defaultDeadline.setDate(new Date(createdOn).getDate() + 60);
+                deadline = defaultDeadline.toISOString().split('T')[0];
+            }
+
             const newItem = {
                 title: document.getElementById('titleInput').value,
                 genre: document.getElementById('genreInput').value,
                 status: document.getElementById('statusInput').value,
-                deadline: document.getElementById('deadlineInput').value,
-                publish: document.getElementById('publishInput').value
+                createdOn: createdOn,
+                deadline: deadline
             };
 
             if (editIndex === null) {
-                // Add new item
                 contentItems.push(newItem);
             } else {
-                // Update existing item
                 contentItems[editIndex] = newItem;
-                editIndex = null; // reset
+                editIndex = null;
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(contentItems));
@@ -197,18 +241,15 @@
         function enableCardEditing() {
             document.querySelectorAll('.content-card').forEach(card => {
                 card.onclick = () => {
-                    editIndex = card.dataset.index;
+                    editIndex = parseInt(card.dataset.index);
                     const item = contentItems[editIndex];
 
-                    // Pre-fill modal fields
                     document.getElementById('titleInput').value = item.title;
                     document.getElementById('genreInput').value = item.genre;
                     document.getElementById('statusInput').value = item.status;
-                    document.getElementById('deadlineInput').value = item.deadline;
-                    document.getElementById('publishInput').value = item.publish;
 
-                    const modalEl = document.getElementById('addContentModal');
-                    const modal = new bootstrap.Modal(modalEl);
+                    setDefaultDates(true, item);
+                    const modal = new bootstrap.Modal(document.getElementById('addContentModal'));
                     modal.show();
                 };
             });
@@ -220,16 +261,14 @@
             const blob = new Blob([dataStr], { type: "application/json" });
             const url = URL.createObjectURL(blob);
 
-            // Only ONE download link
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'data/planner.json'; // main file only
+            a.download = 'planner.json';
             a.click();
 
             URL.revokeObjectURL(url);
             alert('Planner data exported successfully!');
         });
-
 
         // ===== LOAD JSON =====
         document.getElementById('loadBtn').addEventListener('click', () => {
@@ -253,8 +292,18 @@
             };
             input.click();
         });
-    </script>
 
+        // ===== CLEAR JSON =====
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all content? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY); // remove all saved content
+                contentItems = []; // reset array
+                renderCards(); // refresh grid
+                alert('All content cleared!');
+            }
+        });
+
+    </script>
 
 </body>
 

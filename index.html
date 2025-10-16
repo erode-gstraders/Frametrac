@@ -18,7 +18,7 @@
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#">FRAMETRAC</a>
+            <a class="navbar-brand" href="index.html">FRAMETRAC</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -135,6 +135,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ===== JSON / LOCALSTORAGE LOGIC ===== -->
+    <!-- ===== JSON / LOCALSTORAGE LOGIC ===== -->
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -166,21 +167,41 @@
             const container = document.getElementById('recentContent');
             container.innerHTML = '';
             contentItems.forEach(item => {
-                const badgeClass = item.status === 'Planned' ? 'badge-planned' :
-                    item.status === 'Editing' ? 'badge-editing' :
-                        'badge-published';
+                // Determine badge class
+                const badgeClass =
+                    item.status === 'Planned' ? 'badge-planned' :
+                        item.status === 'Scripting' ? 'badge-scripting' :
+                            item.status === 'Filming' ? 'badge-filming' :
+                                item.status === 'Editing' ? 'badge-editing' :
+                                    item.status === 'Ready' ? 'badge-ready' :
+                                        item.status === 'Published' ? 'badge-published' : 'badge-secondary';
+
+                // Default Created On = today if missing
+                let createdOn = item.createdOn ? item.createdOn : new Date().toISOString().split('T')[0];
+
+                // Default Deadline = 60 days from Created On if missing
+                let deadline = item.deadline;
+                if (!deadline) {
+                    const d = new Date(createdOn);
+                    d.setDate(d.getDate() + 60);
+                    deadline = d.toISOString().split('T')[0];
+                }
+
+                // Display Publish as '-' if missing
+                const publishText = item.publish ? item.publish : '-';
+
                 const col = document.createElement('div');
                 col.className = 'col-md-4';
                 col.innerHTML = `
-                    <div class="card content-card">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-1">${item.title}</h6>
-                            <p class="text-muted small mb-2">Genre: ${item.genre}</p>
-                            <span class="badge ${badgeClass} mb-2">${item.status}</span>
-                            <p class="small text-muted mb-0">Deadline: ${item.deadline}</p>
-                            <p class="small text-muted">Publish: ${item.publish}</p>
-                        </div>
-                    </div>`;
+                <div class="card content-card">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-1">${item.title}</h6>
+                        <p class="text-muted small mb-2">Genre: ${item.genre}</p>
+                        <span class="badge ${badgeClass} mb-2">${item.status}</span>
+                        <p class="small text-muted mb-0">Created On: ${createdOn}</p>
+                        <p class="small text-muted mb-0">Deadline: ${deadline}</p>
+                    </div>
+                </div>`;
                 container.appendChild(col);
             });
         }
@@ -189,6 +210,7 @@
         updateStats();
         renderRecentContent();
     </script>
+
 </body>
 
 </html>
